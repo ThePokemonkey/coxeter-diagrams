@@ -8,10 +8,9 @@
             "generator": "Visual Studio 17 2022",
             "toolset": "host=x64",
             "architecture": "win32",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/bin",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/bin",
                 "CMAKE_CXX_COMPILER": "cl.exe"
             }
         }
