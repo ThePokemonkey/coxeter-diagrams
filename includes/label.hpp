@@ -6,7 +6,7 @@
 #include <numeric>
 #include <iostream>
 
-class Label {
+class Label { //one label of a coxeter diagram
     public:
     Label() = default; //makes a 2 label
     Label(int num); //makes a label with just this numerator
@@ -23,7 +23,7 @@ class Label {
     int num_ = 2; //of course the default label is 2
     int den_ = 1;
     bool is_infty_ = false; //if this is true we treat it as an infinity label
-    bool is_retrograde_ = false; //easy value to tell if it's prograde or retrograde, also useful on infinity
+    bool is_retrograde_ = false; //easy value to tell if it's prograde or retrograde, important for infinity
     
     friend std::ostream& operator<<(std::ostream& os, const Label& toprint); //print a representation of this label
 };
