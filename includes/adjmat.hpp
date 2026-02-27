@@ -3,9 +3,14 @@
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
+
+//TODO: this matrix stores edges from a node to itself. it really shouldn't do that. maybe it's fine?
+//IDEA: make the matrix somehow triangular so i store no reduntant information, without reducing functionality (would this make things much much slower?)
+
 
 template <typename T>
-class AdjMat { //adjacency matrix, for storing labelled complete graphs
+class AdjMat { //adjacency matrix, for storing labelled complete graphs. includes self-loops (watch out)
 
     public:
 
@@ -28,10 +33,28 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs
     void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value
 
     const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices
+    const std::vector<T>& operator[](unsigned node) const; //returns a const& of the edges between the given node and all other nodes. allows for [x][y] syntax to access an edge. NOT MUTABLE
 
     private:
 
-     td::vector<std::vector<T>> matrix;
+     std::vector<std::vector<T>> matrix_;
+
+     template <typename T> //this is in the class for some reason
+     friend std::ostream& operator<<(std::ostream& os, const AdjMat<T>& toprint) {
+
+        os << "AdjMat { " ;
+
+        for (const std::vector<T>& row : toprint.matrix_) {
+            os << std::endl;
+            for (const T& item : row) {
+                os << item << ", ";
+            }
+        }
+        
+        os << std::endl << "}";
+
+        return os;
+     }
 
 };
 
@@ -137,5 +160,13 @@ const std::vector<T>& AdjMat<T>::getAdjacents(unsigned node) const {
 
     return matrix_[node];
 }
+
+template <typename T>
+const std::vector<T>& AdjMat<T>::operator[](unsigned node) const {
+    return getAdjacents(node);
+}
+
+
+
 
 #endif //ADJMAT_HPP

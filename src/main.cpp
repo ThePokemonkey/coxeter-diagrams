@@ -1,19 +1,13 @@
 #include <iostream>
 #include "../includes/label.hpp"
+#include "../includes/adjmat.hpp"
 
 int main() {
     //some test labels for now idk
-    Label def;
-    Label inf(false);
-    Label rinf(true);
-    Label sq(4);
-    Label rsq(4,3);
-    Label dydy(4,2);
-    std::cout << def.GetOrder() << std::endl;
-    std::cout << inf.GetOrder()  << std::endl;
-    std::cout << rinf.GetOrder()  << std::endl;
-    std::cout << sq.GetOrder() << std::endl;
-    std::cout << rsq.GetOrder()  << std::endl;
-    std::cout << dydy.GetOrder()  << std::endl;
+    AdjMat<int> coolmat(2);
+    coolmat.setEdge(0,1,1);
+    std::cout << coolmat[0][1] << std::endl;
+    std::cout << coolmat[1][1] << std::endl;
+    std::cout << coolmat << std::endl;
     return 0;
 }
