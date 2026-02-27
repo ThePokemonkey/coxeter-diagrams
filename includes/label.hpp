@@ -8,6 +8,7 @@
 
 class Label { //one label of a coxeter diagram
     public:
+
     Label() = default; //makes a 2 label
     Label(int num); //makes a label with just this numerator
     Label(int num, int den); //makes a label with numerator and denominator
@@ -18,8 +19,10 @@ class Label { //one label of a coxeter diagram
     void Retrograde(); //turns this label retrograde in place
     Label GetRetrograde() const; //returns the retrograde of this label
     bool IsRetrograde() const; //returns if this label is retrograde
+    bool IsInfinity() const; //returns if this label is infinity (or retrograde infinity)
 
     private:
+    
     int num_ = 2; //of course the default label is 2
     int den_ = 1;
     bool is_infty_ = false; //if this is true we treat it as an infinity label
