@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(coxeter-diagrams 
     src\\main.cpp 
     src\\label.cpp
+    src\\diagram.cpp
 )
 
 #PLEASE require C++20

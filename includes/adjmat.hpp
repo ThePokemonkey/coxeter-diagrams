@@ -5,9 +5,8 @@
 #include <stdexcept>
 #include <iostream>
 
-//TODO: this matrix stores edges from a node to itself. it really shouldn't do that. maybe it's fine?
+//this matrix stores edges from a node to itself. maybe it's fine?
 //IDEA: make the matrix somehow triangular so i store no reduntant information, without reducing functionality (would this make things much much slower?)
-
 
 template <typename T>
 class AdjMat { //adjacency matrix, for storing labelled complete graphs. includes self-loops (watch out)
@@ -28,12 +27,11 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. include
     void resize(unsigned nodes); //adds or removes nodes until there is n nodes in the graph. default constructed value on all new edges
     void resize(unsigned nodes, const T& value); //adds or removes nodes until there is n nodes in the graph. given value on all new edges
 
-    const T& getEdge(unsigned node1, unsigned node2) const; //returns the edge (as const reference!) between the two nodes given by index
-    T& getEdge(unsigned node1, unsigned node2); //returns the edge (as mut reference!) between the two nodes given by index
-    void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value
+    const T& getEdge(unsigned node1, unsigned node2) const; //returns the edge (as const reference!) between the two nodes given by index. errors if self-loop
+    T& getEdge(unsigned node1, unsigned node2); //returns the edge (as mut reference!) between the two nodes given by index. errors if self-loop
+    void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value. errors if self-loop
 
-    const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices
-    const std::vector<T>& operator[](unsigned node) const; //returns a const& of the edges between the given node and all other nodes. allows for [x][y] syntax to access an edge. NOT MUTABLE
+    const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices. garbage data in the (n,n) position
 
     private:
 
@@ -128,6 +126,8 @@ template <typename T>
 const T& AdjMat<T>::getEdge(unsigned node1, unsigned node2) const {
     if (node1 >= size() || node2 >= size()) {
         throw std::out_of_range("AdjMat Get Edge: tried to get an edge at a nonexistent node index!");
+    } else if (node1 == node2) {
+        throw std::invalid_argument("AdjMat Get Edge: tried to get a selfloop!");
     }
 
     return matrix_[node1][node2];
@@ -137,6 +137,8 @@ template <typename T>
 T& AdjMat<T>::getEdge(unsigned node1, unsigned node2) {
     if (node1 >= size() || node2 >= size()) {
         throw std::out_of_range("AdjMat Get Edge: tried to get an edge at a nonexistent node index!");
+    } else if (node1 == node2) {
+        throw std::invalid_argument("AdjMat Get Edge: tried to get a selfloop!");
     }
 
     return matrix_[node1][node2];
@@ -146,6 +148,8 @@ template <typename T>
 void AdjMat<T>::setEdge(unsigned node1, unsigned node2, const T& value) {
     if (node1 >= size() || node2 >= size()) {
         throw std::out_of_range("AdjMat Set Edge: tried to set an edge at a nonexistent node index!");
+    } else if (node1 == node2) {
+        throw std::invalid_argument("AdjMat Set Edge: tried to set a selfloop!");
     }
 
     matrix_[node1][node2] = value;
@@ -160,12 +164,6 @@ const std::vector<T>& AdjMat<T>::getAdjacents(unsigned node) const {
 
     return matrix_[node];
 }
-
-template <typename T>
-const std::vector<T>& AdjMat<T>::operator[](unsigned node) const {
-    return getAdjacents(node);
-}
-
 
 
 
