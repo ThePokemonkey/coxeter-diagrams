@@ -10,6 +10,7 @@ class Diagram : AdjMat<Label> {
     Diagram() = default; //makes a totally empty diagram
     Diagram(unsigned nodes); //makes a diagram with n nodes with 2 on every edge
     Diagram(unsigned nodes, const Label& value); //makes a graph with n nodes with a given initial label on every edge
+    Diagram(const std::string&); //makes a cd from its ascii representation. only supports o nodes
 
     private:
     
@@ -29,6 +30,8 @@ class Diagram : AdjMat<Label> {
 
         return os;
      }
+
+    
 };
 
 
