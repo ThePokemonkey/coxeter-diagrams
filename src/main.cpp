@@ -12,6 +12,8 @@ int main() {
         std::cout << Diagram("o3o3o3o *b3o") << std::endl;
         std::cout << Diagram("o5/2o3o7/6o *b5/3o") << std::endl;
         std::cout << Diagram("o5o3o5/2o3*a5/4*c  *b3*d") << std::endl;
+        std::cout << Diagram("o~o") << std::endl;
+        std::cout << Diagram("o~o3o~'o~'*b") << std::endl;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
     }

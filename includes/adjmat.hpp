@@ -28,8 +28,7 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. include
     void resize(unsigned nodes, const T& value); //adds or removes nodes until there is n nodes in the graph. given value on all new edges
     void clear(); //deletes all the nodes
 
-    //return types use the underlying vector's reference/const_reference so
-    //vector<bool> specialization works (it has a proxy reference type).
+    //vector<bool> specialization hellscape
     typename std::vector<T>::const_reference getEdge(unsigned node1, unsigned node2) const; //returns the edge between the two nodes given by index. errors if self-loop
     typename std::vector<T>::reference getEdge(unsigned node1, unsigned node2); //returns the edge between the two nodes given by index. errors if self-loop
     void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value. errors if self-loop

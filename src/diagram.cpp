@@ -18,6 +18,8 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
     bool inedge = false; //if we're trying to parse an edge label
     bool denning = false; //if in an edge, this means we're doing the denominator now
     bool virtualing = false; //means we're looking for a lowercase leter to refer to a virtual node
+    bool infiniting = false; //means we are in special infinity edge parser state
+    bool infinitretro = false; //means we have a retrograde infinity edge cooking up
     std::string curnum; //current numerator of edge
     std::string curden; // current denominator of edge
 
@@ -58,24 +60,52 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
             }
             virtualing = true; //virtual node completion procedures are in the letters case
             continue;
+        case '~': //infinity edge awesome case
+            if (virtualing) {
+                throw std::invalid_argument("Diagram Parsing: virtual node expected, got tilde!");
+            }
+            if (!inedge) {
+                throw std::invalid_argument("Diagram Parsing: tilde outside of an edge!");
+            }
+            if (!curnum.empty()) {
+                throw std::invalid_argument("Diagram Parsing: tilde within number!");
+            }
+            infiniting = true;
+            continue;
+        case '\'':
+            if (!infiniting) {
+                throw std::invalid_argument("Diagram Parsing: apostrophe not in infinity!");
+            }
+            if (virtualing) {
+                throw std::invalid_argument("Diagram Parsing: virtual node expected, got tilde!");
+            }
+            infinitretro = true;
+            continue;
         case 'o': //define node
             if (!virtualing) {
                 //add a node
                 addNode();
                 connected.addNode();
                 if (inedge) { //we need to actually draw an edge
-                    //check if number is reasonable, craft numerator and denominator
-                    if (curnum.empty() || (denning && curden.empty())) {
-                        throw std::invalid_argument("Diagram Parsing: edge ended too early! (via node)");
-                    }
-                    const int num = std::stoi(curnum);
-                    int den = 1;
-                    if (denning) {
-                        den = std::stoi(curden);
+                    if (!infiniting) {
+                        //check if number is reasonable, craft numerator and denominator
+                        if (curnum.empty() || (denning && curden.empty())) {
+                            throw std::invalid_argument("Diagram Parsing: edge ended too early! (via node)");
+                        }
+                        const int num = std::stoi(curnum);
+                        int den = 1;
+                        if (denning) {
+                            den = std::stoi(curden);
+                        }
+                        //set the edge to the appropriate label
+                        setEdge(curnode,size()-1,Label(num,den));
+                    } else {
+                        //infinity edge funny
+                        setEdge(curnode,size()-1,Label(infinitretro));
+                        infiniting = false;
+                        infinitretro = false;
                     }
 
-                    //set the edge to the appropriate label
-                    setEdge(curnode,size()-1,Label(num,den));
                     //set connected to true at this connection
                     connected.setEdge(curnode,size()-1,true);
 
@@ -97,6 +127,10 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
 
             if (ch >= '0' && ch <= '9') { //digit
                 if (inedge) {
+                    if (infiniting) {
+                        throw std::invalid_argument("Diagram Parsing: number in infinity!");
+                    }
+
                     //add on to whatever part of the edge we're doing
                     if (denning) {
                         curden += ch;
@@ -126,18 +160,25 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
                             throw std::invalid_argument("Diagram Parsing: tried to connect an edge multiple times!");
                         }
 
-                        //check if number is reasonable, craft numerator and denominator
-                        if (curnum.empty() || (denning && curden.empty())) {
-                            throw std::invalid_argument("Diagram Parsing: edge ended too early! (via virtual node)");
+                        if (!infiniting) {
+                            //check if number is reasonable, craft numerator and denominator
+                            if (curnum.empty() || (denning && curden.empty())) {
+                                throw std::invalid_argument("Diagram Parsing: edge ended too early! (via virtual node)");
+                            }
+                            const int num = std::stoi(curnum);
+                            int den = 1;
+                            if (denning) {
+                                den = std::stoi(curden);
+                            }
+                            //set the edge to the appropriate label
+                            setEdge(curnode,refnode,Label(num,den));
+                        } else {
+                            //infinity funny
+                            setEdge(curnode,refnode,Label(infinitretro));
+                            infiniting = false;
+                            infinitretro = false;
                         }
-                        const int num = std::stoi(curnum);
-                        int den = 1;
-                        if (denning) {
-                            den = std::stoi(curden);
-                        }
-
-                        //set the edge to the appropriate label
-                        setEdge(curnode,refnode,Label(num,den));
+                        
                         //set connected to true at this connection
                         connected.setEdge(curnode,refnode,true);
 
