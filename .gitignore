@@ -1,2 +1,4 @@
 # do not git my build directory
 bin/
+#no eigen that's their problem
+includes/Eigen/

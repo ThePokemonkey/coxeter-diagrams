@@ -12,6 +12,9 @@ class Diagram : AdjMat<Label> {
     Diagram(unsigned nodes, const Label& value); //makes a graph with n nodes with a given initial label on every edge
     Diagram(const std::string&); //makes a cd from its ascii representation. only supports o nodes
 
+    void invertNode(unsigned node); //retrogrades all the labels surrounding this node
+    
+
     private:
     
     //eventually this will be replaced with a more reasonable function that prints an ASCII diagram

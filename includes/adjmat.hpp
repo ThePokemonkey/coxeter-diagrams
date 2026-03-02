@@ -7,6 +7,7 @@
 
 //this matrix stores edges from a node to itself. maybe it's fine?
 //IDEA: make the matrix somehow triangular so i store no reduntant information, without reducing functionality (would this make things much much slower?)
+//IDEA 2: currently there's no nice way to modify elements in place using their own functions. maybe some reference subclass would be nice
 
 template <typename T>
 class AdjMat { //adjacency matrix, for storing labelled complete graphs. includes self-loops (watch out)
@@ -30,7 +31,6 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. include
 
     //vector<bool> specialization hellscape
     typename std::vector<T>::const_reference getEdge(unsigned node1, unsigned node2) const; //returns the edge between the two nodes given by index. errors if self-loop
-    typename std::vector<T>::reference getEdge(unsigned node1, unsigned node2); //returns the edge between the two nodes given by index. errors if self-loop
     void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value. errors if self-loop
 
     const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices. garbage data in the (n,n) position
@@ -131,17 +131,6 @@ void AdjMat<T>::clear() {
 
 template <typename T>
 typename std::vector<T>::const_reference AdjMat<T>::getEdge(unsigned node1, unsigned node2) const {
-    if (node1 >= size() || node2 >= size()) {
-        throw std::out_of_range("AdjMat Get Edge: tried to get an edge at a nonexistent node index!");
-    } else if (node1 == node2) {
-        throw std::invalid_argument("AdjMat Get Edge: tried to get a selfloop!");
-    }
-
-    return matrix_[node1][node2];
-}
-
-template <typename T> //vector<bool> hellscape means i have to use this strange ::reference subclass??
-typename std::vector<T>::reference AdjMat<T>::getEdge(unsigned node1, unsigned node2) { 
     if (node1 >= size() || node2 >= size()) {
         throw std::out_of_range("AdjMat Get Edge: tried to get an edge at a nonexistent node index!");
     } else if (node1 == node2) {

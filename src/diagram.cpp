@@ -10,8 +10,6 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
     //state starts out with no nodes
     //TODO: it would maybe be faster (less reallocation) if we counted o's beforehand and created all nodes beforehand?
 
-    //SUPER TODO: does not yet support infinity nodes (with ~)
-
     AdjMat<bool> connected; //keeps track of what nodes have already been linked (no double link allowed)
 
     int curnode = -1; //current node index we're on. -1 initially because there aren't any nodes yet
@@ -201,8 +199,12 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
 
             break;
         }
-
-
     }
+}
 
+void Diagram::invertNode(unsigned node) {
+    for (unsigned i = 0; i < size(); ++i) {
+        if (i == node) {continue;} //no self loop
+        setEdge(node,i,getEdge(node,i).GetRetrograde());
+    }
 }
