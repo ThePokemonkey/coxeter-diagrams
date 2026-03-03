@@ -1,6 +1,21 @@
 #include "../includes/diagram.hpp"
 
 
+std::ostream& operator<<(std::ostream& os, Space space) {
+    switch(space) {
+        case Space::Spherical:
+            os << "Spherical";
+            break;
+        case Space::Euclidean:
+            os << "Euclidean";
+            break;
+        case Space::Hyperbolic:
+            os << "Hyperbolic";
+            break;
+    }
+    return os;
+}
+
 Diagram::Diagram(unsigned nodes) : AdjMat<Label>(nodes) {}
 
 Diagram::Diagram(unsigned nodes, const Label& value) : AdjMat<Label>(nodes, value) {}
@@ -207,4 +222,99 @@ void Diagram::invertNode(unsigned node) {
         if (i == node) {continue;} //no self loop
         setEdge(node,i,getEdge(node,i).GetRetrograde());
     }
+}
+
+Eigen::MatrixXd Diagram::getSchlafli() const {
+    //create matrix
+    Eigen::MatrixXd schlafli(size(),size());
+    for (unsigned i = 0; i < size(); ++i) {
+        for (unsigned j = i; j < size(); ++j) {
+            if (i == j) {
+                //self loop positions are 1
+                schlafli(i,j) = 1;
+            } else {
+                //else, -cos(pi/label)
+                Label thislabel = getEdge(i,j);
+                if (thislabel.IsInfinity()) {
+                    if (thislabel.IsRetrograde()) {
+                        //retrograde infinity has a cos of -1. dont think about it
+                        schlafli(i,j) = 1;
+                        schlafli(j,i) = 1;
+                    } else {
+                        //normal infinity gives cos(0) = 1
+                        schlafli(i,j) = -1;
+                        schlafli(j,i) = -1;
+                    }
+                } else {
+                    //normal freaking value
+                    schlafli(i,j) = -std::cos(std::numbers::pi/(getEdge(i,j).GetValue()));
+                    schlafli(j,i) = schlafli(i,j);
+                }
+                
+            }
+        }
+    }
+    //return it!!
+    return schlafli;
+}
+
+Eigen::MatrixXd Diagram::getStott() const {
+    return getSchlafli().inverse();
+}
+
+Space Diagram::getSpace() const {
+    //find schlafli
+    Eigen::MatrixXd schlafli = getSchlafli();
+    //determine
+    double det = schlafli.determinant();
+    if (abs(det) < 0.0000000000001) { //probably euclidean
+        return Space::Euclidean;
+    } else if (det > 0) {
+        return Space::Spherical;
+    } else {
+        return Space::Hyperbolic;
+    }
+}
+
+void Diagram::calcEdges() {
+    //for those just joining the stream calc is slang for calculator
+    //set up edges matrix
+    edges.clear();
+    edges.resize(size());
+    //TODO: will EXPLODE if you put a euclidean diagram in here
+    //get stott matrix
+    Eigen::MatrixXd stott = getStott();
+    //fill out squared edges
+    for (unsigned i = 0; i < size(); ++i) {
+        double sii = stott(i,i);
+        for (unsigned j = 0; j < size(); ++j) {
+            if (i == j) {continue;}
+            double sjj = stott(j,j);
+            double sij = stott(i,j);
+            if (abs(sii) < 0.0000000000001 || abs(sjj) < 0.0000000000001) { //ideal vertex involved here
+                edges.setEdge(i,j,std::numeric_limits<double>::infinity());
+            } else {
+                double cosedge = sij / std::sqrt(abs(sii*sjj)); //abs shouldnt be necessary but just in case
+                if (sii > 0 && sjj > 0) { //spherical case, or ultraideal-ultraideal hyperbolic
+                    cosedge = std::clamp(cosedge,-1.0,1.0); //just in case
+                    double edgehere = acos(cosedge);
+                    edges.setEdge(i,j,edgehere*edgehere);
+                } else if (sii < 0 && sjj < 0) { //normal-normal hyperbolic
+                    if (cosedge > -1) {cosedge = -1;} //just in case
+                    double edgehere = acosh(-cosedge);
+                    edges.setEdge(i,j,edgehere*edgehere);
+                } else { //normal-ultraideal imaginary distance (unverified: i only know this because chatGPT says its true :unknown:)
+                    double edgehere = asinh(abs(cosedge));
+                    edges.setEdge(i,j,-edgehere*edgehere);
+                }
+            }
+        }
+    }
+}
+
+const AdjMat<double>& Diagram::getEdges() {
+    if (edges.empty()) {
+        calcEdges();
+    }
+    return edges;
 }

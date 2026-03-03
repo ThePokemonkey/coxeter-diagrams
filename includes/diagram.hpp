@@ -1,10 +1,22 @@
 #ifndef DIAGRAM_HPP
 #define DIAGRAM_HPP
 
+#include <cmath>
+#include <numbers>
 #include "../includes/label.hpp"
 #include "../includes/adjmat.hpp"
+#include "../includes/Eigen/Dense"
 
-class Diagram : AdjMat<Label> {
+//used to give the space a diagram lies in
+enum class Space {
+    Spherical,
+    Euclidean,
+    Hyperbolic,
+};
+//used to print spaces
+std::ostream& operator<<(std::ostream& os, Space space);
+
+class Diagram : public AdjMat<Label> {
     public:
 
     Diagram() = default; //makes a totally empty diagram
@@ -13,7 +25,10 @@ class Diagram : AdjMat<Label> {
     Diagram(const std::string&); //makes a cd from its ascii representation. only supports o nodes
 
     void invertNode(unsigned node); //retrogrades all the labels surrounding this node
-    
+
+    Space getSpace() const; //uses schlafli matrix to find the space of the diagram (up to floating point precision) (will be confused for hypercompacts)
+
+    const AdjMat<double>& getEdges(); //displays to you the edge lengths of this diagram
 
     private:
     
@@ -34,7 +49,15 @@ class Diagram : AdjMat<Label> {
         return os;
      }
 
+    Eigen::MatrixXd getSchlafli() const; //creates and returns the schlafli matrix corresponding to this diagram
+    Eigen::MatrixXd getStott() const; //creates and returns the stott matrix corresponding to this diagram, the inverse of the schlafli matrix
     
+    //this is the list of SQUARED edge lengths of the fundamental domain
+    // edges.getEdge(i,j) is the squared edge length between the vertices opposite the facets that are dual-represented by nodes i and j
+    AdjMat<double> edges;
+
+    void calcEdges(); //recalculates the squared edge lengths using matrix shenanigans
+
 };
 
 
