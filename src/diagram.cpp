@@ -294,7 +294,7 @@ void Diagram::calcEdges() {
             if (abs(sii) < 0.0000000000001 || abs(sjj) < 0.0000000000001) { //ideal vertex involved here
                 edges.setEdge(i,j,std::numeric_limits<double>::infinity());
             } else {
-                double cosedge = sij / std::sqrt(abs(sii*sjj)); //abs shouldnt be necessary but just in case
+                double cosedge = sij / std::sqrt(abs(sii*sjj));
                 if (sii > 0 && sjj > 0) { //spherical case, or ultraideal-ultraideal hyperbolic
                     cosedge = std::clamp(cosedge,-1.0,1.0); //just in case
                     double edgehere = acos(cosedge);

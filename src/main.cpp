@@ -6,11 +6,15 @@ int main() {
     //some test stuff for now idk
     
     try {
-        Diagram cube("o4o3o3o3o3o3o3o3o");
+        Diagram cube("o3o5o");
+        
         //std::cout << cube << std::endl;
         //cube.invertNode(2);
         //std::cout << cube << std::endl;
 
+        std::cout << cube << std::endl;
+        //cube.swapNodes(0,1);
+        std::cout << cube << std::endl;
         std::cout << cube.size() << std::endl;
         std::cout << cube.getSpace() << std::endl;
         std::cout << cube.getEdges() << std::endl;

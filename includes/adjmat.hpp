@@ -5,12 +5,12 @@
 #include <stdexcept>
 #include <iostream>
 
-//this matrix stores edges from a node to itself. maybe it's fine?
+//this matrix stores edges from a node to itself. maybe it's fine? they'll be garbage though
 //IDEA: make the matrix somehow triangular so i store no reduntant information, without reducing functionality (would this make things much much slower?)
 //IDEA 2: currently there's no nice way to modify elements in place using their own functions. maybe some reference subclass would be nice
 
 template <typename T>
-class AdjMat { //adjacency matrix, for storing labelled complete graphs. includes self-loops (watch out)
+class AdjMat { //adjacency matrix, for storing labelled complete graphs. no self-loops
 
     public:
 
@@ -34,6 +34,9 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. include
     void setEdge(unsigned node1, unsigned node2, const T& value); //sets the edge between the two nodes given by index to the value. errors if self-loop
 
     const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices. garbage data in the (n,n) position
+
+    void swapNodes(unsigned node1, unsigned node2); //swaps the nodes at the given indices, in place
+    //TODO: void permuteNodes(std::vector<unsigned> perm); //reorders the nodes according to perm: node perm[i] goes to position i.
 
     private:
 
@@ -161,6 +164,15 @@ const std::vector<T>& AdjMat<T>::getAdjacents(unsigned node) const {
     return matrix_[node];
 }
 
+template <typename T>
+void AdjMat<T>::swapNodes(unsigned node1, unsigned node2) {
+    if (node1 == node2) {return;}
+    for (unsigned i = 1; i < size(); ++i) {
+        if (i == node1 || i == node2) {continue;}
+        std::swap(matrix_[node1][i],matrix_[node2][i]);
+        std::swap(matrix_[i][node1],matrix_[i][node2]);
+    }
+}
 
 
 #endif //ADJMAT_HPP
