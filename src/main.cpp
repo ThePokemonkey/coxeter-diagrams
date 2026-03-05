@@ -13,9 +13,9 @@ int main() {
         //std::cout << cube << std::endl;
 
         std::cout << cube << std::endl;
-        //cube.swapNodes(0,1);
-        std::cout << cube << std::endl;
         std::cout << cube.size() << std::endl;
+        cube.permuteNodes({2,0,1});
+        std::cout << cube << std::endl;
         std::cout << cube.getSpace() << std::endl;
         std::cout << cube.getEdges() << std::endl;
 

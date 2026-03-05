@@ -318,3 +318,17 @@ const AdjMat<double>& Diagram::getEdges() {
     }
     return edges;
 }
+
+void Diagram::swapNodes(unsigned node1, unsigned node2) {
+    AdjMat<Label>::swapNodes(node1,node2);
+    if (!edges.empty()) {
+        edges.swapNodes(node1,node2);
+    }
+}
+
+void Diagram::permuteNodes(std::vector<unsigned> perm) {
+    AdjMat<Label>::permuteNodes(perm);
+    if (!edges.empty()) {
+        edges.permuteNodes(perm);
+    }
+}

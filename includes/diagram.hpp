@@ -30,6 +30,9 @@ class Diagram : public AdjMat<Label> {
 
     const AdjMat<double>& getEdges(); //displays to you the edge lengths of this diagram
 
+    virtual void swapNodes(unsigned node1, unsigned node2) override; //swaps the nodes at the given indices, in place
+    virtual void permuteNodes(std::vector<unsigned> perm) override; //reorders the nodes according to perm: node perm[i] goes to position i. invalidates references
+
     private:
     
     //eventually this will be replaced with a more reasonable function that prints an ASCII diagram

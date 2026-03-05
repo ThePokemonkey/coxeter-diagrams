@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
 //this matrix stores edges from a node to itself. maybe it's fine? they'll be garbage though
 //IDEA: make the matrix somehow triangular so i store no reduntant information, without reducing functionality (would this make things much much slower?)
@@ -35,8 +36,9 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. no self
 
     const std::vector<T>& getAdjacents(unsigned node) const; //returns a const& vector of the edges between the given node and all other node indices. garbage data in the (n,n) position
 
-    void swapNodes(unsigned node1, unsigned node2); //swaps the nodes at the given indices, in place
-    //TODO: void permuteNodes(std::vector<unsigned> perm); //reorders the nodes according to perm: node perm[i] goes to position i.
+    //these are virtual because Diagrams need to swap other data other than just their labels, so i need to do a little bit of polymorphism
+    virtual void swapNodes(unsigned node1, unsigned node2); //swaps the nodes at the given indices, in place
+    virtual void permuteNodes(std::vector<unsigned> perm); //reorders the nodes according to perm: node perm[i] goes to position i. invalidates references
 
     private:
 
@@ -167,11 +169,40 @@ const std::vector<T>& AdjMat<T>::getAdjacents(unsigned node) const {
 template <typename T>
 void AdjMat<T>::swapNodes(unsigned node1, unsigned node2) {
     if (node1 == node2) {return;}
-    for (unsigned i = 1; i < size(); ++i) {
+    for (unsigned i = 0; i < size(); ++i) {
         if (i == node1 || i == node2) {continue;}
-        std::swap(matrix_[node1][i],matrix_[node2][i]);
-        std::swap(matrix_[i][node1],matrix_[i][node2]);
+        // vector<bool> says i am not allowed to std::swap() these... why...... why........
+        T temp = matrix_[node1][i];
+        matrix_[node1][i] = matrix_[node2][i];
+        matrix_[node2][i] = temp;
+        
+        temp = matrix_[i][node1];
+        matrix_[i][node1] = matrix_[i][node2];
+        matrix_[i][node2] = temp;
     }
+}
+
+template <typename T>
+void AdjMat<T>::permuteNodes(std::vector<unsigned> perm) {
+    if (perm.size() != size()) {
+        throw std::invalid_argument("AdjMat Permute Nodes: this permutation is not the proper size!");
+    }
+    if (std::unique(perm.begin(),perm.end()) != perm.end()) {
+        throw std::invalid_argument("AdjMat Permute Nodes: this permutation contains duplicates!");
+    }
+    std::vector<std::vector<T>> newmat;
+    newmat.resize(size(),std::vector<T>(size())); //not doing this in place, that's a headache
+    for (unsigned i = 0; i < size(); ++i) {
+        for (unsigned j = 0; j < size(); ++j) {
+            unsigned posi = perm[i];
+            unsigned posj = perm[j];
+            if (posi >= size() || posj >= size()) {
+                throw std::invalid_argument("AdjMat Permute Nodes: this permutation contains nonexistent nodes");
+            }
+            newmat[posi][posj] = matrix_[i][j];
+        }
+    }
+    matrix_ = newmat;
 }
 
 
