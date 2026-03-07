@@ -80,6 +80,10 @@ bool Label::IsInfinity() const {
     return is_infty_;
 }
 
+bool Label::operator==(const Label& rhs) const {
+    return (num_ == rhs.num_) && (den_ == rhs.den_) && (is_retrograde_ == rhs.is_retrograde_);
+}
+
 std::ostream& operator<<(std::ostream& os, const Label& toprint) {
     if (toprint.is_infty_) {
         os << '~'; //apparently making an infinity symbol work portably is a nightmare so i guess its a tilde fine
