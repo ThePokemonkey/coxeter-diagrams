@@ -9,12 +9,11 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram cube("o3o3o3o3o o3o3o3*c");
-        Diagram oct("o3o3o3o3o o4o3o3*b");
+        Diagram cube("o3o4o5o");
 
-        for (unsigned i = 0; i < 100; ++i) {
-            cube.isomorphic(oct);
-        }
+        std::cout << cube << std::endl;
+        std::cout << cube.subDiagram(1) << std::endl;
+        std::cout << cube.subDiagram({1,2}) << std::endl;
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);

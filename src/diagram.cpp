@@ -459,3 +459,21 @@ bool Diagram::isomorphic(const Diagram& rhs) const {
     //if no permutation created exact equality, then fail
     return false;
 }
+
+Diagram Diagram::subDiagram(unsigned remnode) const {
+    Diagram res;
+    res.setMat(subMat(remnode));
+    if (!edges.empty()) {
+        res.edges = edges.subgraph(remnode);
+    }
+    return res;
+}
+
+Diagram Diagram::subDiagram(const std::vector<unsigned>& nodes) const {
+    Diagram res;
+    res.setMat(subMat(nodes));
+     if (!edges.empty()) {
+        res.edges = edges.subgraph(nodes);
+    }
+    return res;
+}

@@ -40,9 +40,19 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. no self
     virtual void swapNodes(unsigned node1, unsigned node2); //swaps the nodes at the given indices, in place
     virtual void permuteNodes(std::vector<unsigned> perm); //reorders the nodes according to perm: node perm[i] goes to position i. invalidates references
 
+    //calling these functions in derived classes is like mega weird you shouldnt do it
+    AdjMat<T> subgraph(unsigned remnode) const; //gives the subgraph obtained by deleting this node
+    AdjMat<T> subgraph(const std::vector<unsigned>& nodes) const; //gives the subgraph containing only these nodes. will produce garbage if you feed it duplicate nodes
+    
+    protected:
+
+    std::vector<std::vector<T>> subMat(unsigned remnode) const; //gives the subgraph obtained by deleting this node, in pure matrix
+    std::vector<std::vector<T>> subMat(const std::vector<unsigned>& nodes) const; //gives the subgraph containing only these nodes, in pure matrix. will produce garbage if you feed it duplicate nodes
+    void setMat(const std::vector<std::vector<T>>& matrix); //sets matrix_ to the input matrix. to only be used when better methods are not available
+
     private:
 
-     std::vector<std::vector<T>> matrix_;
+     std::vector<std::vector<T>> matrix_; //holds the edges
 
      //prints the adjmat out mediocrely
      friend std::ostream& operator<<(std::ostream& os, const AdjMat<T>& toprint) {
@@ -203,6 +213,80 @@ void AdjMat<T>::permuteNodes(std::vector<unsigned> perm) {
         }
     }
     matrix_ = newmat;
+}
+
+template <typename T>
+std::vector<std::vector<T>> AdjMat<T>::subMat(unsigned remnode) const {
+    if (empty()) {
+        throw std::out_of_range("AdjMat Submatrix: this diagram is empty!");
+    }
+    if (remnode >= size()) {
+        throw std::out_of_range("AdjMat Submatrix: there aren't this many nodes here!");
+    }
+    std::vector<std::vector<T>> resmat;
+    unsigned newsize = size()-1;
+    resmat.resize(newsize,std::vector<T>(newsize));
+    for (unsigned i = 0; i < newsize; ++i) {
+        unsigned targeti = i;
+        if (i >= remnode) {
+            ++targeti;
+        }
+        for (unsigned j = i; j < newsize; ++j) {
+            unsigned targetj = j;
+            if (j >= remnode) {
+                ++targetj;
+            }
+            resmat[i][j] = matrix_[targeti][targetj];
+            resmat[j][i] = matrix_[targeti][targetj];
+        }
+    }
+    return resmat;
+}
+
+template <typename T>
+std::vector<std::vector<T>> AdjMat<T>::subMat(const std::vector<unsigned>& nodes) const {
+    //this function will NOT be checking if the nodes vector has duplicates. try not to feed it utter garbage
+    if (empty()) {
+        throw std::out_of_range("AdjMat Submatrix: this diagram is empty!");
+    }
+    if (nodes.size() > size()) {
+        throw std::invalid_argument("AdjMat Submatrix: too many nodes provided!");
+    }
+    std::vector<std::vector<T>> resmat;
+    resmat.resize(nodes.size(),std::vector<T>(nodes.size()));
+    for (unsigned i = 0; i < nodes.size(); ++i) {
+        unsigned targeti = nodes[i];
+        for (unsigned j = i; j < nodes.size(); ++j) {
+            unsigned targetj = nodes[j];
+            if (targetj >= size()) {
+                throw std::out_of_range("AdjMat Submatrix: there aren't this many nodes here!");
+            }
+            if (i == j) {continue;} //selfloops are garbage, but we still needed to check for out of range here
+            resmat[i][j] = matrix_[targeti][targetj];
+            resmat[j][i] = matrix_[targeti][targetj];
+        }
+
+    }
+    return resmat;
+}
+
+template <typename T>
+void AdjMat<T>::setMat(const std::vector<std::vector<T>>& matrix) {
+    matrix_ = matrix;
+}
+
+template <typename T>
+AdjMat<T> AdjMat<T>::subgraph(unsigned remnode) const {
+    AdjMat<T> res;
+    res.setMat(subMat(remnode));
+    return res;
+}
+
+template <typename T>
+AdjMat<T> AdjMat<T>::subgraph(const std::vector<unsigned>& nodes) const {
+    AdjMat<T> res;
+    res.setMat(subMat(nodes));
+    return res;
 }
 
 

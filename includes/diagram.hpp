@@ -40,6 +40,9 @@ class Diagram : public AdjMat<Label> {
     bool isomorphic(const Diagram& rhs) const; //checks if the diagrams are isomorphic (difficult)
     //TODO: isomorphic uses my own ad-hoc algorithm that might suck. if it becomes a bottleneck (probable) get a library
 
+    Diagram subDiagram(unsigned remnode) const; //gives the subgdiagram obtained by deleting this node
+    Diagram subDiagram(const std::vector<unsigned>& nodes) const; //gives the subdiagram containing only these nodes. will produce garbage if you feed it duplicate nodes
+
     private:
     
     //this is the list of SQUARED edge lengths of the fundamental domain
