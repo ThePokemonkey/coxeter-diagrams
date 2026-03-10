@@ -219,7 +219,7 @@ Diagram::Diagram(const std::string& ascii) : AdjMat<Label>() {
 void Diagram::invertNode(unsigned node) {
     for (unsigned i = 0; i < size(); ++i) {
         if (i == node) {continue;} //no self loop
-        setEdge(node,i,getEdge(node,i).GetRetrograde());
+        setEdge(node,i,getEdge(node,i).getRetrograde());
     }
 }
 
@@ -234,8 +234,8 @@ Eigen::MatrixXd Diagram::getSchlafli() const {
             } else {
                 //else, -cos(pi/label)
                 Label thislabel = getEdge(i,j);
-                if (thislabel.IsInfinity()) {
-                    if (thislabel.IsRetrograde()) {
+                if (thislabel.isInfinity()) {
+                    if (thislabel.isRetrograde()) {
                         //retrograde infinity has a cos of -1. dont think about it
                         schlafli(i,j) = 1;
                         schlafli(j,i) = 1;
@@ -246,7 +246,7 @@ Eigen::MatrixXd Diagram::getSchlafli() const {
                     }
                 } else {
                     //normal freaking value
-                    schlafli(i,j) = -std::cos(std::numbers::pi/(getEdge(i,j).GetValue()));
+                    schlafli(i,j) = -std::cos(std::numbers::pi/(getEdge(i,j).getValue()));
                     schlafli(j,i) = schlafli(i,j);
                 }
                 

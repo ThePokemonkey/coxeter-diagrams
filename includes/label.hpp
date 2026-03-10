@@ -15,13 +15,14 @@ class Label { //one label of a coxeter diagram
     Label(int num); //makes a label with just this numerator
     Label(int num, int den); //makes a label with numerator and denominator
     Label(bool retrograde); //creates an infinity label with the specified retrogradity
-    double GetValue() const; //returns the float numerical value of that label. -1 if infinity, -2 if retrograde infinity
-    int GetAxis() const; //returns the numerator of the label. -1 if infinity
-    int GetOrder() const; //returns the numerator of the label if the fraction were to be reduced. aka rotational symmetry order here. -1 if infinity
-    void Retrograde(); //turns this label retrograde in place
-    Label GetRetrograde() const; //returns the retrograde of this label
-    bool IsRetrograde() const; //returns if this label is retrograde
-    bool IsInfinity() const; //returns if this label is infinity (or retrograde infinity)
+    double getValue() const; //returns the float numerical value of that label. -1 if infinity, -2 if retrograde infinity
+    int getAxis() const; //returns the numerator of the label. -1 if infinity
+    int getOrder() const; //returns the numerator of the label if the fraction were to be reduced. aka rotational symmetry order here. -1 if infinity
+    void retrograde(); //turns this label retrograde in place
+    Label getRetrograde() const; //returns the retrograde of this label
+    bool isComplementary(const Label& rhs) const; //returns true if the angles these two labels represent are complemetary (retrogrades of eachother)
+    bool isRetrograde() const; //returns if this label is retrograde
+    bool isInfinity() const; //returns if this label is infinity (or retrograde infinity)
     bool operator==(const Label& rhs) const; //tells label equality
 
     friend struct std::hash<Label>; //so i can put these in a set

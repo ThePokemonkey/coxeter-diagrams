@@ -1,6 +1,6 @@
 #include <iostream>
 #include <chrono>
-#include "../includes/diagram.hpp"
+#include "../includes/adder.hpp"
 
 
 int main() {
@@ -9,11 +9,13 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram cube("o3o4o5o");
+        Diagram cube("o3o3o *b3o");
+        Diagram cube2("o3o3o4o");
 
-        std::cout << cube << std::endl;
-        std::cout << cube.subDiagram(1) << std::endl;
-        std::cout << cube.subDiagram({1,2}) << std::endl;
+        std::vector<std::vector<unsigned>> sfacets = sharedFacets(cube,cube2);
+        for (unsigned i = 0; i < sfacets.size(); ++i) {
+            std::cout << sfacets[i][0] << ", " << sfacets[i][1] << std::endl;
+        }
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);

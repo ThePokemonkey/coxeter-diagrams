@@ -30,7 +30,7 @@ Label::Label(bool retrograde) {
     is_retrograde_ = retrograde;
 }
 
-double Label::GetValue() const {
+double Label::getValue() const {
     if (is_infty_) {
         if (is_retrograde_) {
             return -2;
@@ -42,21 +42,21 @@ double Label::GetValue() const {
     return static_cast<double>(num_)/static_cast<double>(den_);
 }
 
-int Label::GetAxis() const {
+int Label::getAxis() const {
     if (is_infty_) {
         return -1;
     }
     return num_;
 }
 
-int Label::GetOrder() const {
+int Label::getOrder() const {
     if (is_infty_) {
         return -1;
     }
     return num_/std::gcd(num_,den_);
 }
 
-void Label::Retrograde() {
+void Label::retrograde() {
     if (is_infty_) {
         is_retrograde_ = !is_retrograde_;
         return;
@@ -65,18 +65,22 @@ void Label::Retrograde() {
     is_retrograde_ = (den_ > (num_/2)); //recalc because for things like 2 or 4/2 it might not have swapped
 }
 
-Label Label::GetRetrograde() const {
+Label Label::getRetrograde() const {
     if (is_infty_) {
         return Label(!is_retrograde_);
     }
     return Label(num_,num_-den_);
 }
 
-bool Label::IsRetrograde() const {
+bool Label::isComplementary(const Label& rhs) const {
+    return operator==(rhs.getRetrograde());
+}
+
+bool Label::isRetrograde() const {
     return is_retrograde_;
 }
 
-bool Label::IsInfinity() const {
+bool Label::isInfinity() const {
     return is_infty_;
 }
 
