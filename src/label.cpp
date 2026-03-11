@@ -56,6 +56,13 @@ int Label::getOrder() const {
     return num_/std::gcd(num_,den_);
 }
 
+int Label::getWinding() const {
+    if (is_infty_ && is_retrograde_) {
+        return -1;
+    }
+    return den_;
+}
+
 void Label::retrograde() {
     if (is_infty_) {
         is_retrograde_ = !is_retrograde_;

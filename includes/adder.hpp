@@ -20,18 +20,18 @@ double doubleRd(double num); //rounds to nearest 2epsilon
 const std::unordered_map<std::unordered_multiset<double>,std::vector<unsigned>> getVertexSignatures(const AdjMat<double>& edges); //gets a collection of vectors of nodes that share the same edges comin out
 const std::unordered_map<std::unordered_multiset<double>,unsigned> countifySignatures(const std::unordered_map<std::unordered_multiset<double>,std::vector<unsigned>>& sigs); //turns a getVertexSignatures result into one where each vector is replaced by its size
 bool subpermute(std::vector<std::vector<unsigned>>& toperm); //does std::next_permutation on the sub-vecs, rolling to next one if complete. returns false if rolling all the way over
-bool exactEqual(const AdjMat<double>& edges1, const AdjMat<double>& edges2);
-//returns all permutations of the nodes in toperm that match with match
-std::vector<std::vector<unsigned>> matchingPerms(const AdjMat<double>& toperm, const AdjMat<double>& match);
+bool exactEqual(const AdjMat<double>& edges1, const AdjMat<double>& edges2); //does exact equality on adjmat<double>s (with epsilon)
+
+std::vector<unsigned> fullPermFromSubPerm(unsigned remnode, const std::vector<unsigned>& perm); //converts a permutation of a 1-node-missing subdiagram into a permutation of the whole diagram, given the missing node
 
 
 //REAL USEFUL FUNCTIONS:
 
-//isomorphism checking for edges
-bool edgesIsomorphic(const AdjMat<double>& edges1, const AdjMat<double>& edges2); //checks whether two adjmats of doubles are isomorphic. used to match facets for adding
+//returns all permutations of edges2 which align with edges1
+std::vector<std::vector<unsigned>> edgesIsomorphisms(const AdjMat<double>& edges1, const AdjMat<double>& edges2);
 
-//find potential addition sites
-std::vector<std::pair<unsigned,unsigned>> sharedFacets(Diagram& lhs, Diagram& rhs); //returns pairs of node indices {index into lhs, index into rhs} whose dual facets are identical
+//given two input diagrams, finds all possible result diagrams from adding them (in any orientations)
+std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs);
 
 
 

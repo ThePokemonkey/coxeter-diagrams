@@ -35,7 +35,7 @@ class Diagram : public AdjMat<Label> {
 
     virtual void swapNodes(unsigned node1, unsigned node2) override; //swaps the nodes at the given indices, in place
     virtual void permuteNodes(std::vector<unsigned> perm) override; //reorders the nodes according to perm: node perm[i] goes to position i. invalidates references
-
+    
     bool exactEqual(const Diagram& rhs) const; //foolishly checks direct equality on each individual label (does not solve isomorphism)
     bool isomorphic(const Diagram& rhs) const; //checks if the diagrams are isomorphic (difficult)
     //TODO: isomorphic uses my own ad-hoc algorithm that might suck. if it becomes a bottleneck (probable) get a library

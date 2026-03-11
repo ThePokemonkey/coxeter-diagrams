@@ -9,12 +9,12 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram cube("o3o3o *b3o");
-        Diagram cube2("o3o3o4o");
+        Diagram cube("o3o4o");
+        Diagram cube2("o4o4o3/2*a");
 
-        std::vector<std::vector<unsigned>> sfacets = sharedFacets(cube,cube2);
-        for (unsigned i = 0; i < sfacets.size(); ++i) {
-            std::cout << sfacets[i][0] << ", " << sfacets[i][1] << std::endl;
+        std::vector<Diagram> adds = makeAdditions(cube,cube2);
+        for (unsigned i = 0; i < adds.size(); ++i) {
+            std::cout << adds[i] << std::endl;
         }
         
         auto end = std::chrono::high_resolution_clock::now();

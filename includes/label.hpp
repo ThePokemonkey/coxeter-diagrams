@@ -18,6 +18,7 @@ class Label { //one label of a coxeter diagram
     double getValue() const; //returns the float numerical value of that label. -1 if infinity, -2 if retrograde infinity
     int getAxis() const; //returns the numerator of the label. -1 if infinity
     int getOrder() const; //returns the numerator of the label if the fraction were to be reduced. aka rotational symmetry order here. -1 if infinity
+    int getWinding() const; //returns the denominator of the label. -1 if retrograde infinity (infinity is just 1)
     void retrograde(); //turns this label retrograde in place
     Label getRetrograde() const; //returns the retrograde of this label
     bool isComplementary(const Label& rhs) const; //returns true if the angles these two labels represent are complemetary (retrogrades of eachother)

@@ -39,7 +39,7 @@ class AdjMat { //adjacency matrix, for storing labelled complete graphs. no self
     //these are virtual because Diagrams need to swap other data other than just their labels, so i need to do a little bit of polymorphism
     virtual void swapNodes(unsigned node1, unsigned node2); //swaps the nodes at the given indices, in place
     virtual void permuteNodes(std::vector<unsigned> perm); //reorders the nodes according to perm: node perm[i] goes to position i. invalidates references
-
+    
     //calling these functions in derived classes is like mega weird you shouldnt do it
     AdjMat<T> subgraph(unsigned remnode) const; //gives the subgraph obtained by deleting this node
     AdjMat<T> subgraph(const std::vector<unsigned>& nodes) const; //gives the subgraph containing only these nodes. will produce garbage if you feed it duplicate nodes
