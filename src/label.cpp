@@ -92,7 +92,7 @@ bool Label::isInfinity() const {
 }
 
 bool Label::operator==(const Label& rhs) const {
-    return (num_ == rhs.num_) && (den_ == rhs.den_) && (is_retrograde_ == rhs.is_retrograde_);
+    return (num_ == rhs.num_) && (den_ == rhs.den_) && (is_retrograde_ == rhs.is_retrograde_) && (is_infty_ == rhs.is_infty_);
 }
 
 std::ostream& operator<<(std::ostream& os, const Label& toprint) {

@@ -9,13 +9,17 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram cube("o3o4o");
-        Diagram cube2("o4o4o3/2*a");
+        Label test(4,2);
+        Label test2;
+        std::cout << test.isComplementary(test2) << std::endl;
 
-        std::vector<Diagram> adds = makeAdditions(cube,cube2);
+        Diagram cube("o3o3o3o3o5o");
+
+        std::vector<Diagram> adds = recursiveAdder({cube});
         for (unsigned i = 0; i < adds.size(); ++i) {
             std::cout << adds[i] << std::endl;
         }
+        std::cout << "results: " << adds.size() << std::endl;
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);

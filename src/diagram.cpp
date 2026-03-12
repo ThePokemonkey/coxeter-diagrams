@@ -429,16 +429,20 @@ bool Diagram::isomorphic(const Diagram& rhs) const {
     -if none of the permutation comboes work, these diagrams must be different, and so we can return false
     */
 
+    //we need to sort the subvectors so std::next_permutation suffices to create every permutation
+    for (unsigned i = 0; i < sigsets1.size(); ++i) {
+        std::sort(sigsets1[i].begin(),sigsets1[i].end());
+    }
+    for (unsigned i = 0; i < sigsets2.size(); ++i) {
+        std::sort(sigsets2[i].begin(),sigsets2[i].end());
+    }
+
     //build nodinds
     std::map<unsigned,std::pair<unsigned,unsigned>> nodinds;
     for (unsigned i = 0; i < sigsets1.size(); ++i) {
         for (unsigned j = 0; j < sigsets1[i].size(); ++j) {
             nodinds.insert(std::make_pair(sigsets1[i][j],std::make_pair(i,j)));
         }
-    }
-    //we need to sort the subvectors of sigsets2 so std::next_permutation suffices to create every permutation
-    for (unsigned i = 0; i < sigsets2.size(); ++i) {
-        std::sort(sigsets2[i].begin(),sigsets2[i].end());
     }
     //main loop over all permutation combinations
     do {

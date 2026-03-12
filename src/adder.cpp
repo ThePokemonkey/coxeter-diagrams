@@ -162,7 +162,9 @@ std::vector<unsigned> fullPermFromSubPerm(unsigned remnode, const std::vector<un
     return res;
 }
 
-
+//KNOWN ISSUE: this accepts additions that "mix axes" sometimes, which produces occasional nonsense results in some circumstances
+//this is not a possibility i accounted for when i was designing this program, and fixing it would require significant restructuring
+//for now, i'm just going to leave this issue alone. in the future i may try to fix it. it wouldnt be that hard if we had hashing
 std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs) {
     //if diagrams different size obv nothing
     if (lhs.size() != rhs.size()) {
@@ -285,6 +287,7 @@ std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs) {
                     //create it and set its relations to the noncomps
                     unsigned newnode = addition.size();
                     addition.addNode();
+
                     addition.setEdge(newnode,0,lhs.getEdge(lhsnode1, noncompL));
                     addition.setEdge(newnode,1,rhsp.getEdge(rhsnode1, noncompR));
 
@@ -295,11 +298,11 @@ std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs) {
                         if (lhsnode2 >= nodeL) {
                             ++lhsnode2;
                         }
-                        unsigned rhsnode2 = nodeabs2;
-                        if (rhsnode2 >= nodeR) {
-                            ++rhsnode2;
-                        }
                         unsigned oldnode = newnode-(nodeabs1-nodeabs2);
+                        if (nodeabs1 >= noncomp && nodeabs2 < noncomp) {
+                            //compensate for the misaligned continue skipping
+                            ++oldnode;
+                        }
                         addition.setEdge(newnode,oldnode,lhs.getEdge(lhsnode1,lhsnode2)); //could also use rhsp
                     }
                 }
@@ -313,4 +316,52 @@ std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs) {
         }
     }
     return res;
+}
+
+bool isInList(const std::vector<Diagram>& list, Diagram tofind) {
+    //ahhh deliciously inefficient
+    for (unsigned i = 0; i < list.size(); ++i) {
+        if (tofind.isomorphic(list[i])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<Diagram> recursiveAdder(const std::vector<Diagram>& initials) {
+    std::vector<Diagram> results = initials; //this is the updating collection of result diagrams
+    int checkedto = -1; //this is how far into the list we have checked for additions
+    unsigned news = initials.size(); //keeps track of how many new diagrams were obtained this iteration
+    unsigned its = 0; //how many iterations have occurred
+
+    //i know it says "recursiveAdder" but it's actually iterative
+    while (news > 0) {
+        ++its;
+        std::cout << its << ": starting with " << results.size() << std::endl;;
+        //store the ones found this iteration
+        std::vector<Diagram> newguys;
+        //iterate over every new pair of addends
+        for (unsigned addend1 = checkedto+1; addend1 < results.size(); ++addend1) { //save a lot of time by skipping over checkedto for addend1
+            for (unsigned addend2 = 0; addend2 < results.size(); ++addend2) {
+                //add them
+                std::vector<Diagram> adds = makeAdditions(results[addend1],results[addend2]);
+                //for every addition, if we don't have it, put it in newguys
+                for (unsigned addind = 0; addind < adds.size(); ++addind) {
+                    if ((!isInList(results,adds[addind]) && (!isInList(newguys,adds[addind])))) {
+                        newguys.push_back(adds[addind]);
+                    }
+                }
+            }
+        }
+
+        //every addition has been made. update the bookkeeping
+        checkedto += news; //we've checked all the previously-new diagrams now
+        news = newguys.size(); //new news
+        //put the newguys into results
+        for (unsigned i = 0; i < newguys.size(); ++i) {
+            results.push_back(newguys[i]);
+        }
+    }
+
+    return results; //yipee!!!!
 }

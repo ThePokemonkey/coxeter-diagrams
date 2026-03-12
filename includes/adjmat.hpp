@@ -204,12 +204,12 @@ void AdjMat<T>::permuteNodes(std::vector<unsigned> perm) {
     newmat.resize(size(),std::vector<T>(size())); //not doing this in place, that's a headache
     for (unsigned i = 0; i < size(); ++i) {
         for (unsigned j = 0; j < size(); ++j) {
-            unsigned posi = perm[i];
-            unsigned posj = perm[j];
-            if (posi >= size() || posj >= size()) {
+            unsigned nodi = perm[i];
+            unsigned nodj = perm[j];
+            if (nodi >= size() || nodj >= size()) {
                 throw std::invalid_argument("AdjMat Permute Nodes: this permutation contains nonexistent nodes");
             }
-            newmat[posi][posj] = matrix_[i][j];
+            newmat[i][j] = matrix_[nodi][nodj];
         }
     }
     matrix_ = newmat;

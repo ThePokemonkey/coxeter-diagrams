@@ -30,11 +30,17 @@ std::vector<unsigned> fullPermFromSubPerm(unsigned remnode, const std::vector<un
 //returns all permutations of edges2 which align with edges1
 std::vector<std::vector<unsigned>> edgesIsomorphisms(const AdjMat<double>& edges1, const AdjMat<double>& edges2);
 
-//given two input diagrams, finds all possible result diagrams from adding them (in any orientations)
+//given two input diagrams, finds all possible result diagrams from adding them (in any orientations). does not deduplicate
 std::vector<Diagram> makeAdditions(Diagram& lhs, Diagram& rhs);
 
+//given a list and a diagram, finds if that diagram is in that list (up to isomorphism)
+bool isInList(const std::vector<Diagram>& list, Diagram tofind);
+//TODO: if we could hashmap Diagrams, this wouldnt be necessary, and things would be WAY more efficient.
+//but i have no idea how to hash diagrams in such a way that isomorphic ones get the same hash
 
-
+//given a list of starter diagrams, repeatedly tries all addition combinations until no more new additions are possible
+//returns a giant list of the results. this is the crown jewel of this software
+std::vector<Diagram> recursiveAdder(const std::vector<Diagram>& initials);
 
 
 
