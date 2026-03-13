@@ -13,7 +13,7 @@ int main() {
         Label test2;
         std::cout << test.isComplementary(test2) << std::endl;
 
-        Diagram cube("o3o3o3o3o5o");
+        Diagram cube("o3o3o4o3o3o");
 
         std::vector<Diagram> adds = recursiveAdder({cube});
         for (unsigned i = 0; i < adds.size(); ++i) {

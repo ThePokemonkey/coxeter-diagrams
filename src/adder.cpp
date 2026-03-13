@@ -5,6 +5,9 @@
 constexpr double epsilon = 1e-12;
 
 bool doubleEq(double lhs, double rhs) {
+    if (lhs == std::numeric_limits<double>::infinity() && rhs == std::numeric_limits<double>::infinity()) {
+        return true;
+    }
     return abs(lhs-rhs) < epsilon;
 }
 
