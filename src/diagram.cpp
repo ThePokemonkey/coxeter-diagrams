@@ -258,6 +258,9 @@ Eigen::MatrixXd Diagram::getSchlafli() const {
 }
 
 Eigen::MatrixXd Diagram::getStott() const {
+    if (getSpace() == Space::Euclidean) {
+        throw std::invalid_argument("do NOT get the edges of a euclidean diagram");
+    }
     return getSchlafli().inverse();
 }
 
