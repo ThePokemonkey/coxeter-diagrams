@@ -87,7 +87,7 @@ AdjMat<T>::AdjMat(unsigned nodes, const T& value) {
 
 template <typename T>
 unsigned AdjMat<T>::size() const {
-    return matrix_.size();
+    return static_cast<unsigned>(matrix_.size());
 }
 
 template <typename T>

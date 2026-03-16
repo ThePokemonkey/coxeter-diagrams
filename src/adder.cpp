@@ -334,7 +334,7 @@ bool isInList(const std::vector<Diagram>& list, Diagram tofind) {
 std::vector<Diagram> recursiveAdder(const std::vector<Diagram>& initials) {
     std::vector<Diagram> results = initials; //this is the updating collection of result diagrams
     int checkedto = -1; //this is how far into the list we have checked for additions
-    unsigned news = initials.size(); //keeps track of how many new diagrams were obtained this iteration
+    unsigned news = static_cast<unsigned>(initials.size()); //keeps track of how many new diagrams were obtained this iteration
     unsigned its = 0; //how many iterations have occurred
 
     //i know it says "recursiveAdder" but it's actually iterative
@@ -359,7 +359,7 @@ std::vector<Diagram> recursiveAdder(const std::vector<Diagram>& initials) {
 
         //every addition has been made. update the bookkeeping
         checkedto += news; //we've checked all the previously-new diagrams now
-        news = newguys.size(); //new news
+        news = static_cast<unsigned>(newguys.size()); //new news
         //put the newguys into results
         for (unsigned i = 0; i < newguys.size(); ++i) {
             results.push_back(newguys[i]);
