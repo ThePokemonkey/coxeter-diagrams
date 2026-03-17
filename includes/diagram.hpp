@@ -2,7 +2,6 @@
 #define DIAGRAM_HPP
 
 #include <cmath>
-#include <numbers>
 #include <unordered_map>
 #include <map>
 #include <unordered_set>

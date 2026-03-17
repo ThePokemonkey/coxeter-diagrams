@@ -2,6 +2,7 @@
 #define LABEL_HPP
 
 #include <string>
+#include <numbers>
 #include <stdexcept>
 #include <numeric>
 #include <iostream>
@@ -15,7 +16,9 @@ class Label { //one label of a coxeter diagram
     Label(int num); //makes a label with just this numerator
     Label(int num, int den); //makes a label with numerator and denominator
     Label(bool retrograde); //creates an infinity label with the specified retrogradity
+    Label(double chord); //creates a label that has this chord length. will yell at you if it exceeds +- 2
     double getValue() const; //returns the float numerical value of that label. -1 if infinity, -2 if retrograde infinity
+    double getChord() const; //returns the verf length of the polygon with this label. retrogrades are of course negative
     int getAxis() const; //returns the numerator of the label. -1 if infinity
     int getOrder() const; //returns the numerator of the label if the fraction were to be reduced. aka rotational symmetry order here. -1 if infinity
     int getWinding() const; //returns the denominator of the label. -1 if retrograde infinity (infinity is just 1)
@@ -72,7 +75,5 @@ namespace std {
         }
     };
 }
-
-
 
 #endif //LABEL_HPP

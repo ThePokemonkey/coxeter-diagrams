@@ -9,17 +9,9 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Label test(4,2);
+        Label test(4,3);
         Label test2;
-        std::cout << test.isComplementary(test2) << std::endl;
-
-        Diagram cube("o5o5o5o");
-
-        std::vector<Diagram> adds = recursiveAdder({cube});
-        for (unsigned i = 0; i < adds.size(); ++i) {
-            std::cout << adds[i] << std::endl;
-        }
-        std::cout << "results: " << adds.size() << std::endl;
+        std::cout << Label(test.getChord()) << std::endl;
         
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);
