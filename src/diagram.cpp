@@ -221,6 +221,13 @@ void Diagram::invertNode(unsigned node) {
         if (i == node) {continue;} //no self loop
         setEdge(node,i,getEdge(node,i).getRetrograde());
     }
+    edges.clear();
+}
+
+Diagram Diagram::getInverted(unsigned node) const {
+    Diagram res = *this;
+    res.invertNode(node);
+    return res;
 }
 
 Eigen::MatrixXd Diagram::getSchlafli() const {

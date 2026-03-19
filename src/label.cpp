@@ -35,18 +35,24 @@ Label::Label(bool retrograde) {
 Label::Label(double chord) {
     if (abs(chord-2) < epsilon) {
         is_infty_ = true;
+        is_retrograde_ = false;
         return;
     }
     if (abs(chord+2) < epsilon) {
         is_infty_ = true;
-        is_retrograde_ = false;
+        is_retrograde_ = true;
         return;
     }
     if (abs(chord) > 2) {
+        std::cout << chord << std::endl;
         throw std::invalid_argument("Label chord constructor: this would make a pseudogonal label!");
     }
     //find the numerical value
     double numery = std::numbers::pi / (acos(chord/2));
+    if (numery <= 1+epsilon) {
+        //numerical value should never be one or less than one
+        throw std::runtime_error("Label chord constructor:  illegal numerical value encountered!");
+    }
     //iterate thru a bunch of reasonable denominators
     for (double i = 1; i < 100; ++i) {
         double attempt = numery*i;
@@ -54,6 +60,7 @@ Label::Label(double chord) {
             //very reasonable denominator
             den_ = static_cast<int>(i);
             num_ = static_cast<int>(round(attempt));
+            is_retrograde_ = (den_ > (num_/2));
             return;
         }
     }
@@ -119,6 +126,16 @@ Label Label::getRetrograde() const {
         return Label(!is_retrograde_);
     }
     return Label(num_,num_-den_);
+}
+
+
+void Label::reduce() {
+    if (is_infty_) {
+        return; //cant reduce infty my guy
+    }
+    int gcd = std::gcd(num_,den_);
+    num_ /= gcd;
+    den_ /= gcd;
 }
 
 bool Label::isComplementary(const Label& rhs) const {

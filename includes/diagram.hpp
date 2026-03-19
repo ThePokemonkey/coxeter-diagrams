@@ -28,6 +28,7 @@ class Diagram : public AdjMat<Label> {
     Diagram(const std::string&); //makes a cd from its ascii representation. only supports o nodes
 
     void invertNode(unsigned node); //retrogrades all the labels surrounding this node
+    Diagram getInverted(unsigned node) const; //returns a new diagram obtained by doing invertNode to this one
 
     Space getSpace() const; //uses schlafli matrix to find the space of the diagram (up to floating point precision) (will be confused for hypercompacts)
     const AdjMat<double>& getEdges(); //displays to you the edge lengths of this diagram

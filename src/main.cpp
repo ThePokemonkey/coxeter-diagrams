@@ -1,25 +1,23 @@
 #include <iostream>
 #include <chrono>
-#include "../includes/adder.hpp"
-
+#include "../includes/doubler.hpp"
 
 int main() {
-    //some test stuff for now idk
-    
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Label test(4,3);
-        Label test2;
-        std::cout << Label(test.getChord()) << std::endl;
-        
+        Diagram test("o3o4o3o");
+        std::vector<Diagram> results = recursiveDoubler({test});
+        for (unsigned i = 0; i < results.size(); ++i) {
+            std::cout << results[i] << std::endl;
+        }
+        std::cout << "got " << results.size() << " diagrams!" << std::endl;
+
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);
         std::cout << "took " << duration.count() << " milliseconds!" << std::endl;
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
     }
-    
-    
     return 0;
 }

@@ -39,7 +39,7 @@ bool isInList(const std::vector<Diagram>& list, Diagram tofind);
 //but i have no idea how to hash diagrams in such a way that isomorphic ones get the same hash
 
 //given a list of starter diagrams, repeatedly tries all addition combinations until no more new additions are possible
-//returns a giant list of the results. this is the crown jewel of this software
+//returns a giant list of the results.
 std::vector<Diagram> recursiveAdder(const std::vector<Diagram>& initials);
 
 
