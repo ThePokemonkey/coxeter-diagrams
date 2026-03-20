@@ -491,3 +491,16 @@ Diagram Diagram::subDiagram(const std::vector<unsigned>& nodes) const {
     }
     return res;
 }
+
+double Diagram::normalizedWindingScore(const Label& lab) {
+    if (lab.isInfinity()) {
+        if (lab.isRetrograde()) {
+            return 0;
+        }
+        return 1;
+    }
+    const int& axis = lab.getAxis();
+    if (axis == 2) {return 1;} //do NOT divide by 0
+    const int& winding = lab.getWinding();
+    return (axis-winding-1)/(axis-2);
+}

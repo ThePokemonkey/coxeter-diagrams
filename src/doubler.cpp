@@ -25,7 +25,7 @@ Diagram doubleEdge(const Diagram& base, unsigned target, unsigned respective) {
     //but you're usually going to get duplicates with the reduced and unreduced forms, so it helps reduce clutter
     //this method is already untrustworthy with respect to reducible labels, so this isn't a weird thing to do.
     //if it's already wrong, we can make it a little more wrong if it makes things cleaner
-    
+
     res.setEdge(target,respective,newlabel); //set it
 
     //now, update all the other affected labels coming out of target according to p9's magic rule

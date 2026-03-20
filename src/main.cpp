@@ -6,7 +6,7 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram test("o3o4o3o");
+        Diagram test("o5o3o3o");
         std::vector<Diagram> results = recursiveDoubler({test});
         for (unsigned i = 0; i < results.size(); ++i) {
             std::cout << results[i] << std::endl;
