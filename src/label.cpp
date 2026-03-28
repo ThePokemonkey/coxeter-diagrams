@@ -32,26 +32,28 @@ Label::Label(bool retrograde) {
     is_retrograde_ = retrograde;
 }
 
-Label::Label(double chord) {
-    if (abs(chord-2) < epsilon) {
+Label::Label(double cosa) {
+    if (abs(cosa-1) < epsilon) { //cos infinity is said to be 1 (trust)
         is_infty_ = true;
         is_retrograde_ = false;
         return;
     }
-    if (abs(chord+2) < epsilon) {
+    if (abs(cosa+1) < epsilon) { //cos infinity' is said to be -1 (trust)
         is_infty_ = true;
         is_retrograde_ = true;
         return;
     }
-    if (abs(chord) > 2) {
-        std::cout << chord << std::endl;
-        throw std::invalid_argument("Label chord constructor: this would make a pseudogonal label!");
+    if (abs(cosa) < epsilon) { //return a 2 label if obvious, otherwise division by ~zero might get weird
+        return;
+    }
+    if (abs(cosa) > 1) {
+        throw std::invalid_argument("Label cosine constructor: this would make a pseudogonal label!");
     }
     //find the numerical value
-    double numery = std::numbers::pi / (acos(chord/2));
+    double numery = std::numbers::pi / (acos(cosa));
     if (numery <= 1+epsilon) {
         //numerical value should never be one or less than one
-        throw std::runtime_error("Label chord constructor:  illegal numerical value encountered!");
+        throw std::runtime_error("Label cosine constructor:  illegal numerical value encountered!");
     }
     //iterate thru a bunch of reasonable denominators
     for (double i = 1; i < 100; ++i) {
@@ -64,7 +66,7 @@ Label::Label(double chord) {
             return;
         }
     }
-    throw std::runtime_error("Label chord constructor: could not find <100 rational approximation!");
+    throw std::runtime_error("Label cosine constructor: could not find <100 rational approximation!");
 }
 
 double Label::getValue() const {
@@ -77,6 +79,26 @@ double Label::getValue() const {
     }
 
     return static_cast<double>(num_)/static_cast<double>(den_);
+}
+
+double Label::getCos() const {
+    if (is_infty_) {
+        if (is_retrograde_) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    return cos(std::numbers::pi/getValue());
+}
+
+double Label::getSin() const {
+    if (is_infty_) {
+        return 0;
+    }
+
+    return sin(std::numbers::pi/getValue());
 }
 
 double Label::getChord() const {

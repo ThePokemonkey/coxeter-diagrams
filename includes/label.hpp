@@ -16,10 +16,12 @@ class Label { //one label of a coxeter diagram
     Label(int num); //makes a label with just this numerator
     Label(int num, int den); //makes a label with numerator and denominator
     Label(bool retrograde); //creates an infinity label with the specified retrogradity
-    Label(double chord); //creates a label that has this chord length. will yell at you if it exceeds +- 2
+    Label(double cosa); //creates a label from the cosine of the angle represented by it. always reduced, explodes if numerator > 100.
 
 
     double getValue() const; //returns the float numerical value of that label. -1 if infinity, -2 if retrograde infinity
+    double getCos() const; //returns the cosine of the angle represented by this node. inf is 1 and inf' is -1
+    double getSin() const; //returns the sine of the angle represented by this node. infs are 0
     double getChord() const; //returns the verf length of the polygon with this label. retrogrades are of course negative
 
     int getAxis() const; //returns the numerator of the label. -1 if infinity

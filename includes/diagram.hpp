@@ -65,6 +65,16 @@ class Diagram : public AdjMat<Label> {
     //prints out the diagram in ASCII formatting
     //this function is horrifyingly large and complicated
     friend std::ostream& operator<<(std::ostream& os, const Diagram& toprint) {
+        /* FOR DEBUGGING
+        std::cout << "PRINTERY" << std::endl;
+        for (unsigned i = 0; i < toprint.size(); ++i) {
+            for (unsigned j = 0; j < toprint.size(); ++j) {
+                if (i == j) {continue;}
+                std::cout << toprint.getEdge(i,j) << std::endl;
+            }
+        }
+        */
+
         int curnode = -1; //whatever node we are on right now. -1 if we have no target
         AdjMat<bool> traversed(toprint.size(),false); //tracks which edges we've rendered so far
         std::vector<int> usednodes(toprint.size(),-1); //tracks which nodes have been rendered so far. -1 if unused, otherwise indicates the order of rendering as 0,1,2,3...
@@ -109,7 +119,7 @@ class Diagram : public AdjMat<Label> {
                     //now all the sums are calculated
                     if (checkadjs == 0 && checkused) {continue;} //no adjs and already used means no work to do, dont accept
                     //conditional logic for if this is a better choice
-                    if (newtarget != -1 || !(targetused && !checkused)) {  //autoaccept if no target yet or if this is unused and target is used
+                    if (!(newtarget == -1 || (targetused && !checkused))) {  //autoaccept if no target yet or if this is unused and target is used
                         if ((checkadjs > adjs && adjs > 0) || (checkadjs < adjs && checkadjs == 0)) {continue;} //we want less adjs, unless 0
                         if (checkadjs == adjs) { //if same adjs, tiebreak on axis
                             if (checksum < axissum) {continue;} //we want more axis

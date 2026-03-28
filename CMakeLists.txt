@@ -11,7 +11,7 @@ add_executable(coxeter-diagrams
     src\\label.cpp
     src\\diagram.cpp
     src\\adder.cpp
-    src\\doubler.cpp
+    src\\twiddler.cpp
 )
 
 #PLEASE require C++20
