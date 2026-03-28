@@ -72,7 +72,7 @@ std::vector<Diagram> recursiveTwiddler(const std::vector<Diagram>& initials) {
                     //now we have an angle chosen to screw with. possibilities for new denominator are from 1 to old denominator
                     const Label& targetlab = base.getEdge(targetnod,respectnod);
                     if (targetlab.isInfinity()) {continue;} //do NOT twiddle infinity, it WILL divide by zero
-                    for (unsigned i = 1; i < targetlab.getAxis(); ++i) { //looping over new denominators
+                    for (int i = 1; i < targetlab.getAxis(); ++i) { //looping over new denominators
                         if (i == targetlab.getWinding()) {continue;} //will be identical to old diagram
 
                         //attempt the twiddle

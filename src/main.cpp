@@ -6,7 +6,7 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram test("o5o3o3o");
+        Diagram test("o6o3o");
 
         std::vector<Diagram> results = recursiveTwiddler({test});
         for (unsigned i = 0; i < results.size(); ++i) {

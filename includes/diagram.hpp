@@ -65,7 +65,8 @@ class Diagram : public AdjMat<Label> {
     //prints out the diagram in ASCII formatting
     //this function is horrifyingly large and complicated
     friend std::ostream& operator<<(std::ostream& os, const Diagram& toprint) {
-        /* FOR DEBUGGING
+        
+        /* For debugging
         std::cout << "PRINTERY" << std::endl;
         for (unsigned i = 0; i < toprint.size(); ++i) {
             for (unsigned j = 0; j < toprint.size(); ++j) {
@@ -202,7 +203,7 @@ class Diagram : public AdjMat<Label> {
                     adjaxis = adjlab.getAxis();
                     adjwind = normalizedWindingScore(adjlab);
                     //check all of our conditions
-                    if (newtarget != -1 || !(targetused && !adjused)) { //autoaccept if no target yet or if this is unused and target is used
+                    if (!(newtarget == -1 || (targetused && !adjused))) { //autoaccept if no target yet or if this is unused and target is used
                         if (adjadjcount < targetadjs) {continue;} //we want more adjs
                         if (adjadjcount == targetadjs) { //if same adjs tiebreak on axis
                             if (adjaxis < axis) {continue;} //we want higher axis
