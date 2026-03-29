@@ -230,6 +230,22 @@ Diagram Diagram::getInverted(unsigned node) const {
     return res;
 }
 
+bool Diagram::isConvex() const {
+    for (unsigned nod1 = 0; nod1 < size(); ++nod1) {
+        for (unsigned nod2 = nod1; nod2 < size(); ++nod2) {
+            if (nod1 == nod2) {continue;} //no selfloop
+            const Label& edge = getEdge(nod1,nod2);
+            if (edge.isInfinity() && edge.isRetrograde()) {
+                return false; //no ~'
+            } 
+            if (edge.getWinding() > 1) {
+                return false; //starry
+            }
+        }
+    }
+    return true;
+}
+
 Eigen::MatrixXd Diagram::getSchlafli() const {
     //create matrix
     Eigen::MatrixXd schlafli(size(),size());

@@ -2,6 +2,7 @@
 #define TWIDDLER_HPP
 
 #include "../includes/diagram.hpp"
+#include <unordered_map>
 #include "../includes/adder.hpp" //literally just for isinlist. i should make a util file at some point shouldnt i
 
 

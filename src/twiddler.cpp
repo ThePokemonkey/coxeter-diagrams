@@ -15,6 +15,7 @@ Diagram twiddleEdge(const Diagram& base, unsigned target, unsigned respective, u
     }
     newlabel.reduce(); //this is a double-edged sword. it throws away real information,
     //but you're usually going to get duplicates with the reduced and unreduced forms, so it helps reduce clutter
+    //it's also going to report some weird mixed-ly reduced diagrams that aren't actually real if you don't reduce
     //this method is already untrustworthy with respect to reducible labels, so this isn't a weird thing to do.
     //if it's already wrong, we can make it a little more wrong if it makes things cleaner
 
@@ -49,9 +50,24 @@ Diagram twiddleEdge(const Diagram& base, unsigned target, unsigned respective, u
 
 std::vector<Diagram> recursiveTwiddler(const std::vector<Diagram>& initials) {
     std::vector<Diagram> results = initials; //this is the updating collection of result diagrams
+    std::unordered_map<std::unordered_map<std::unordered_multiset<Label>,unsigned>,std::vector<Diagram>> deduptab; //crazy data structure i am using to optimize deduplication
     int checkedto = -1; //this is how far into the list we have checked for mutations
     unsigned news = static_cast<unsigned>(initials.size()); //keeps track of how many new diagrams were obtained this iteration
     unsigned its = 0; //how many iterations have occurred
+
+    //insert initials into deduptab. copy pasted from lower code lolol
+    for (Diagram initial : initials) {
+        const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>>& sigs = initial.getVertexSignatures();
+        const std::unordered_map<std::unordered_multiset<Label>,unsigned>& sigcs = initial.countifySignatures(sigs);
+        if (deduptab.contains(sigcs)) {
+            std::vector<Diagram>& sigsharers = deduptab.at(sigcs);
+            if (!isInList(sigsharers,initial)) { //check actual isomorphism only on the list of diagrams that share siggies
+                sigsharers.push_back(initial); //update dedup
+            }
+        } else { //if this is a brand new signature it's defo new
+            deduptab.insert({sigcs,{initial}}); //add this to the dedup table
+        }
+    }
 
     //i know it says "recursiveTwiddler" but it's actually iterative
     while (news > 0) {
@@ -85,26 +101,21 @@ std::vector<Diagram> recursiveTwiddler(const std::vector<Diagram>& initials) {
                         {continue;} //oh no,, an error,,, anyway
 
                         //put this in ze list if it's new
-                        if ((!isInList(results,newdiag) && (!isInList(newguys,newdiag)))) {
-                            newguys.push_back(newdiag);
+                        const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>>& sigs = newdiag.getVertexSignatures();
+                        const std::unordered_map<std::unordered_multiset<Label>,unsigned>& sigcs = newdiag.countifySignatures(sigs);
+                        if (deduptab.contains(sigcs)) {
+                            std::vector<Diagram>& sigsharers = deduptab.at(sigcs);
+                            if (!isInList(sigsharers,newdiag)) { //check actual isomorphism only on the list of diagrams that share siggies
+                                sigsharers.push_back(newdiag); //update dedup
+                                newguys.push_back(newdiag); //add it to news
+                            }
+                        } else { //if this is a brand new signature it's defo new
+                            deduptab.insert({sigcs,{newdiag}}); //add this to the dedup table
+                            newguys.push_back(newdiag); //add it to news
                         }
                     }
                 }
             }
-
-            /* FLIPPING SHOULD NO LONGER BE NECESSARY
-            //try flipping every node in this diagram
-            //in the future it would be more optimized to do every flipping pattern at once
-            //then we could know that flipping a diagram we got by flipping would never be useful, and avoid a lot of work
-            //not doing this rn though
-            for (unsigned flipnod = 0; flipnod < base.size(); ++flipnod) {
-                Diagram newdiag = base.getInverted(flipnod); //flippied
-                //put this in ze list if it's new
-                if ((!isInList(results,newdiag) && (!isInList(newguys,newdiag)))) {
-                    newguys.push_back(newdiag);
-                }
-            }
-            */
         }
 
         //every mutation has been made. update the bookkeeping

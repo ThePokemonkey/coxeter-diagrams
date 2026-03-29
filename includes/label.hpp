@@ -7,6 +7,7 @@
 #include <numeric>
 #include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 class Label { //one label of a coxeter diagram
@@ -82,6 +83,32 @@ namespace std {
                 h ^= hv + 0x9e3779b97f4a7c15ULL + (h<<6) + (h>>2);
             }
             return h;
+        }
+    };
+
+    // Generic order-independent hash for std::unordered_map with any key and value types
+    template<typename K, typename V>
+    struct hash<std::unordered_map<K, V>> {
+        size_t operator()(const std::unordered_map<K, V>& m) const noexcept {
+            // Collect hashes of key-value pairs and sort them for order independence
+            std::vector<size_t> pair_hashes;
+            pair_hashes.reserve(m.size());
+            for (const auto& [key, value] : m) {
+                // Hash both key and value together
+                size_t key_hash = std::hash<K>{}(key);
+                size_t val_hash = std::hash<V>{}(value);
+                // Combine key and value hashes
+                size_t pair_hash = key_hash ^ (val_hash + 0x9e3779b97f4a7c15ULL + (key_hash << 6) + (key_hash >> 2));
+                pair_hashes.push_back(pair_hash);
+            }
+            // Sort for order independence
+            std::sort(pair_hashes.begin(), pair_hashes.end());
+            // Combine all pair hashes
+            size_t result = 0;
+            for (auto ph : pair_hashes) {
+                result ^= ph + 0x9e3779b97f4a7c15ULL + (result << 6) + (result >> 2);
+            }
+            return result;
         }
     };
 }

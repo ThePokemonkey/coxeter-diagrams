@@ -30,6 +30,8 @@ class Diagram : public AdjMat<Label> {
     void invertNode(unsigned node); //retrogrades all the labels surrounding this node
     Diagram getInverted(unsigned node) const; //returns a new diagram obtained by doing invertNode to this one
 
+    bool isConvex() const; //tells you if this diagram generates convex objects: all labels are nonstarry
+
     Space getSpace() const; //uses schlafli matrix to find the space of the diagram (up to floating point precision) (will be confused for hypercompacts)
     const AdjMat<double>& getEdges(); //displays to you the edge lengths of this diagram
 
@@ -43,6 +45,10 @@ class Diagram : public AdjMat<Label> {
     Diagram subDiagram(unsigned remnode) const; //gives the subgdiagram obtained by deleting this node
     Diagram subDiagram(const std::vector<unsigned>& nodes) const; //gives the subdiagram containing only these nodes. will produce garbage if you feed it duplicate nodes
 
+    const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>> getVertexSignatures() const; //gets a collection of vectors of nodes that share the same edges comin out
+    const std::unordered_map<std::unordered_multiset<Label>,unsigned> countifySignatures(const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>>& sigs) const; //turns a getVertexSignatures result into one where each vector is replaced by its size
+    //dude do you guys see these types ^^^ what the hell am i even doing
+
     private:
     
     //this is the list of SQUARED edge lengths of the fundamental domain
@@ -52,10 +58,6 @@ class Diagram : public AdjMat<Label> {
     Eigen::MatrixXd getSchlafli() const; //creates and returns the schlafli matrix corresponding to this diagram
     Eigen::MatrixXd getStott() const; //creates and returns the stott matrix corresponding to this diagram, the inverse of the schlafli matrix
     void calcEdges(); //recalculates the squared edge lengths using matrix shenanigans
-
-    const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>> getVertexSignatures() const; //gets a collection of vectors of nodes that share the same edges comin out
-    const std::unordered_map<std::unordered_multiset<Label>,unsigned> countifySignatures(const std::unordered_map<std::unordered_multiset<Label>,std::vector<unsigned>>& sigs) const; //turns a getVertexSignatures result into one where each vector is replaced by its size
-    //dude do you guys see these types ^^^ what the hell am i even doing
 
     bool subpermute(std::vector<std::vector<unsigned>>& toperm) const; //does std::next_permutation on the sub-vecs, rolling to next one if complete. returns false if rolling all the way over
 
