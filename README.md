@@ -5,3 +5,5 @@ AI has been used only a little bit in this project. work is like 85% my own. jus
 
 
 now requires Eigen. drop the Eigen source folder's Eigen subdirectory into the includes folder before trying to compile
+
+i have been compiling this through vscode using msvc and cmake. i cannot promise it will work elsewhere, for now

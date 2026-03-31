@@ -3,7 +3,7 @@
 Diagram twiddleEdge(const Diagram& base, unsigned target, unsigned respective, unsigned newden) {
     Diagram res = base;
 
-    //double the edge
+    //modify the edge
     const Label& targetedge = base.getEdge(target,respective);
     Label newlabel; //bunch of awesome logic to construct this new label
 

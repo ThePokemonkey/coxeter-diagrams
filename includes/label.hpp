@@ -3,6 +3,7 @@
 
 #include <string>
 #include <numbers>
+#include <cmath>
 #include <stdexcept>
 #include <numeric>
 #include <iostream>

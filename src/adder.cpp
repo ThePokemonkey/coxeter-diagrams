@@ -8,7 +8,7 @@ bool doubleEq(double lhs, double rhs) {
     if (lhs == std::numeric_limits<double>::infinity() && rhs == std::numeric_limits<double>::infinity()) {
         return true;
     }
-    return abs(lhs-rhs) < epsilon;
+    return std::abs(lhs-rhs) < epsilon;
 }
 
 double doubleRd(double num) {

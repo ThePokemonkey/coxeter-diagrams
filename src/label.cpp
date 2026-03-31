@@ -33,24 +33,24 @@ Label::Label(bool retrograde) {
 }
 
 Label::Label(double cosa) {
-    if (abs(cosa-1) < epsilon) { //cos infinity is said to be 1 (trust)
+    if (std::abs(cosa-1) < epsilon) { //cos infinity is said to be 1 (trust)
         is_infty_ = true;
         is_retrograde_ = false;
         return;
     }
-    if (abs(cosa+1) < epsilon) { //cos infinity' is said to be -1 (trust)
+    if (std::abs(cosa+1) < epsilon) { //cos infinity' is said to be -1 (trust)
         is_infty_ = true;
         is_retrograde_ = true;
         return;
     }
-    if (abs(cosa) < epsilon) { //return a 2 label if obvious, otherwise division by ~zero might get weird
+    if (std::abs(cosa) < epsilon) { //return a 2 label if obvious, otherwise division by ~zero might get weird
         return;
     }
-    if (abs(cosa) > 1) {
+    if (std::abs(cosa) > 1) {
         throw std::invalid_argument("Label cosine constructor: this would make a pseudogonal label!");
     }
     //find the numerical value
-    double numery = std::numbers::pi / (acos(cosa));
+    double numery = std::numbers::pi / (std::acos(cosa));
     if (numery <= 1+epsilon) {
         //numerical value should never be one or less than one
         throw std::runtime_error("Label cosine constructor:  illegal numerical value encountered!");
@@ -58,10 +58,10 @@ Label::Label(double cosa) {
     //iterate thru a bunch of reasonable denominators
     for (double i = 1; i < 100; ++i) {
         double attempt = numery*i;
-        if (abs(attempt-round(attempt)) < epsilon) {
+        if (std::abs(attempt-std::round(attempt)) < epsilon) {
             //very reasonable denominator
             den_ = static_cast<int>(i);
-            num_ = static_cast<int>(round(attempt));
+            num_ = static_cast<int>(std::round(attempt));
             is_retrograde_ = (den_ > (num_/2));
             return;
         }
@@ -90,7 +90,7 @@ double Label::getCos() const {
         }
     }
 
-    return cos(std::numbers::pi/getValue());
+    return std::cos(std::numbers::pi/getValue());
 }
 
 double Label::getSin() const {
@@ -98,7 +98,7 @@ double Label::getSin() const {
         return 0;
     }
 
-    return sin(std::numbers::pi/getValue());
+    return std::sin(std::numbers::pi/getValue());
 }
 
 double Label::getChord() const {
@@ -110,7 +110,7 @@ double Label::getChord() const {
         }
     }
 
-    return 2*cos(std::numbers::pi/getValue());
+    return 2*std::cos(std::numbers::pi/getValue());
 }
 
 int Label::getAxis() const {

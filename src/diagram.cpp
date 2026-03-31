@@ -294,7 +294,7 @@ Space Diagram::getSpace() const {
     Eigen::MatrixXd schlafli = getSchlafli();
     //determine
     double det = schlafli.determinant();
-    if (abs(det) < epsilon) { //probably euclidean
+    if (std::abs(det) < epsilon) { //probably euclidean
         return Space::Euclidean;
     } else if (det > 0) {
         return Space::Spherical;
@@ -318,20 +318,20 @@ void Diagram::calcEdges() {
             if (i == j) {continue;}
             double sjj = stott(j,j);
             double sij = stott(i,j);
-            if (abs(sii) < epsilon || abs(sjj) < epsilon) { //ideal vertex involved here
+            if (std::abs(sii) < epsilon || std::abs(sjj) < epsilon) { //ideal vertex involved here
                 edges.setEdge(i,j,std::numeric_limits<double>::infinity());
             } else {
-                double cosedge = sij / std::sqrt(abs(sii*sjj));
+                double cosedge = sij / std::sqrt(std::abs(sii*sjj));
                 if (sii > 0 && sjj > 0) { //spherical case, or ultraideal-ultraideal hyperbolic
                     cosedge = std::clamp(cosedge,-1.0,1.0); //just in case
-                    double edgehere = acos(cosedge);
+                    double edgehere = std::acos(cosedge);
                     edges.setEdge(i,j,edgehere*edgehere);
                 } else if (sii < 0 && sjj < 0) { //normal-normal hyperbolic
                     if (cosedge > -1) {cosedge = -1;} //just in case
-                    double edgehere = acosh(-cosedge);
+                    double edgehere = std::acosh(-cosedge);
                     edges.setEdge(i,j,edgehere*edgehere);
                 } else { //normal-ultraideal imaginary distance (unverified: i only know this because chatGPT says its true :unknown:)
-                    double edgehere = asinh(abs(cosedge));
+                    double edgehere = std::asinh(std::abs(cosedge));
                     edges.setEdge(i,j,-edgehere*edgehere);
                 }
             }
