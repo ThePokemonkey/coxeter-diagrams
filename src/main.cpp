@@ -6,13 +6,11 @@ int main() {
     try {
         auto begin = std::chrono::high_resolution_clock::now();
 
-        Diagram test("o5o3o3o");
+        Diagram test("o5o5o5o5/4*b");
 
-        std::vector<Diagram> results = recursiveTwiddler({test});
+        std::vector<Diagram> results = splitDiagram(test,1,3);
         for (unsigned i = 0; i < results.size(); ++i) {
-            if (results[i].isConvex()) {
-                std::cout << results[i] << std::endl;
-            }
+            std::cout << results[i] << std::endl;
         }
         std::cout << "got " << results.size() << " diagrams!" << std::endl;
         

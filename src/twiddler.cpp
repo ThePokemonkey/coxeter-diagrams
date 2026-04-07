@@ -129,3 +129,30 @@ std::vector<Diagram> recursiveTwiddler(const std::vector<Diagram>& initials) {
 
     return results; //yipee!!!!
 }
+
+std::vector<Diagram> splitDiagram(const Diagram& tosplit, unsigned node1, unsigned node2) {
+    const Label& splitangle = tosplit.getEdge(node1,node2);
+    const int winding = splitangle.getWinding();
+    const int axis = splitangle.getAxis();
+    if (winding <= 1) {
+        //no splitting to be done (also excludes infinities)
+        return {tosplit};
+    }
+    //to split the diagram into its components at this angle, we can just twiddle the two mirrors at this angle in every combination that results in the most basic angle
+    //say the angle is p/q
+    //twiddle with respect to node 1 for each p/1, p/2, ... p/(q-1)
+    //then twiddle with respect to node 2 to get to p/1
+    //TODO: it would be more efficient to do this with some closer analysis of the diagrams and constructing them individually rather than just blindly twiddling (we redo a lot of work). but this should be okay for now
+    std::vector<Diagram> results;
+    for (int segment = 0; segment < winding; ++segment) {
+        Diagram totwiddle = tosplit;
+        if (segment != 0) { //this does nothing if segment is 0 so we shouldnt bother
+            totwiddle = twiddleEdge(totwiddle,node1,node2,winding-segment);
+        }
+        if (segment != winding-1) { //this does nothing if segment is winding-1 (the above twiddle already set it to denominator 1)
+            totwiddle = twiddleEdge(totwiddle,node2,node1,1);
+        }
+        results.push_back(totwiddle);
+    }
+    return results;
+}
