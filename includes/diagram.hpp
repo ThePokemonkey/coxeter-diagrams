@@ -32,6 +32,9 @@ class Diagram : public AdjMat<Label> {
 
     bool isConvex() const; //tells you if this diagram generates convex objects: all labels are nonstarry
 
+    void reduce(); //reduces this diagram in place (simply reduces all the labels in it)
+    Diagram getReduced() const; //returns a new diagram obtained by reducing this one
+
     Space getSpace() const; //uses schlafli matrix to find the space of the diagram (up to floating point precision) (will be confused for hypercompacts)
     const AdjMat<double>& getEdges(); //displays to you the edge lengths of this diagram
 

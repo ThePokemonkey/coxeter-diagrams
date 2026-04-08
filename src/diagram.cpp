@@ -346,6 +346,22 @@ const AdjMat<double>& Diagram::getEdges() {
     return edges;
 }
 
+void Diagram::reduce() {
+    for (unsigned i = 0; i < size(); ++i) {
+        for (unsigned j = i; j < size(); ++j) {
+            Label toreduce = getEdge(i,j);
+            toreduce.reduce();
+            setEdge(i,j,toreduce);
+        }
+    }
+}
+
+Diagram Diagram::getReduced() const {
+    Diagram toreduce = *this;
+    toreduce.reduce();
+    return toreduce;
+}
+
 void Diagram::swapNodes(unsigned node1, unsigned node2) {
     AdjMat<Label>::swapNodes(node1,node2);
     if (!edges.empty()) {
